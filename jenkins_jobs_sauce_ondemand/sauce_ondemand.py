@@ -42,6 +42,8 @@ import xml.etree.ElementTree as XML
 from jenkins_jobs.errors import InvalidAttributeError
 from jenkins_jobs.errors import is_sequence
 from jenkins_jobs.errors import JenkinsJobsException
+from jenkins_jobs.modules.helpers import convert_mapping_to_xml
+
 
 
 logger = logging.getLogger(__name__)
@@ -110,42 +112,36 @@ def sauce_ondemand(registry, xml_parent, data):
     """
     sauce = XML.SubElement(xml_parent, 'hudson.plugins.sauce__ondemand.'
                            'SauceOnDemandBuildWrapper')
-    XML.SubElement(sauce, 'enableSauceConnect').text = str(data.get(
-        'enable-sauce-connect', False)).lower()
-    host = data.get('sauce-host', '')
-    XML.SubElement(sauce, 'seleniumHost').text = host
-    port = data.get('sauce-port', '')
-    XML.SubElement(sauce, 'seleniumPort').text = port
-    # Optional override global authentication
-    username = data.get('override-username')
-    key = data.get('override-api-access-key')
-    if username and key:
-        cred = XML.SubElement(sauce, 'credentials')
-        XML.SubElement(cred, 'username').text = username
-        XML.SubElement(cred, 'apiKey').text = key
-    atype = data.get('type', 'selenium')
-    info = XML.SubElement(sauce, 'seleniumInformation')
-    if atype == 'selenium':
-        url = data.get('starting-url', '')
-        XML.SubElement(info, 'startingURL').text = url
-        browsers = XML.SubElement(info, 'seleniumBrowsers')
-        for platform in data['platforms']:
-            XML.SubElement(browsers, 'string').text = platform
-        XML.SubElement(info, 'isWebDriver').text = 'false'
-        XML.SubElement(sauce, 'seleniumBrowsers',
-                       {'reference': '../seleniumInformation/'
-                        'seleniumBrowsers'})
-    if atype == 'webdriver':
-        browsers = XML.SubElement(info, 'webDriverBrowsers')
-        for platform in data['platforms']:
-            XML.SubElement(browsers, 'string').text = platform
-        XML.SubElement(info, 'isWebDriver').text = 'true'
-        XML.SubElement(sauce, 'webDriverBrowsers',
-                       {'reference': '../seleniumInformation/'
-                        'webDriverBrowsers'})
-    XML.SubElement(sauce, 'launchSauceConnectOnSlave').text = str(data.get(
-        'launch-sauce-connect-on-slave', False)).lower()
-    protocol = data.get('https-protocol', '')
-    XML.SubElement(sauce, 'httpsProtocol').text = protocol
-    options = data.get('sauce-connect-options', '')
-    XML.SubElement(sauce, 'options').text = options
+    mapping = [
+        ('enable-sauce-connect', 'enableSauceConnect', False),
+        ('native-app-package', 'nativeAppPackage', ''),
+        ('sauce-host', 'seleniumHost', ''),
+        ('sauce-port', 'seleniumPort', ''),
+        ('credentials-id', 'credentialId', ''),
+        ('launch-sauce-connect-on-slave', 'launchSauceConnectOnSlave', False),
+        ('sauce-connect-path', 'sauceConnectPath', ''),
+        ('sauce-connect-options', 'options', ''),
+        ('verbose-logging', 'verboseLogging', False),
+        ('use-latest-webbrowser-versions', 'useLatestVersion', False),
+        ('unique-tunnel-perbuild', 'useGeneratedTunnelIdentifier', False),
+    ]
+    convert_mapping_to_xml(sauce, data, mapping, fail_required=True)
+
+    webdriver_browsers = XML.SubElement(sauce, 'webDriverBrowsers')
+    for browser in data.get('webdriver-browsers', []):
+        XML.SubElement(webdriver_browsers, 'string').text = browser
+
+    appium_browsers = XML.SubElement(sauce, 'appiumBrowsers')
+    for browser in data.get('appium-browsers', []):
+        XML.SubElement(appium_browsers, 'string').text = browser
+
+    kind = data.get('condition', 'always')
+    ctag = XML.SubElement(sauce, 'condition')
+    core_prefix = 'org.jenkins_ci.plugins.run_condition.core.'
+    if kind == "always":
+        ctag.set('class', core_prefix + 'AlwaysRun')
+    else:
+        supportedConditions = ['always']
+        raise InvalidAttributeError('condition',
+                                    condition,
+                                    )

@@ -2,12 +2,19 @@ wrappers:
   - sauce-ondemand-ng:
       enable-sauce-connect: true
       sauce-host: foo
-      sauce-port: '8080'
-      override-username: foo
-      override-api-access-key: 123lkj123kh123l;k12323
-      type: webdriver
-      platforms:
-        - Linuxandroid4
-        - Linuxfirefox10
-        - Linuxfirefox11
+      sauce-port: 8080
+      credentials-id: ad7f5c34-6c5b-11e7-8e08-784f436e5c58
+      native-app-package: foo/path
+      webdriver-browsers:
+        - Linuxfirefox32
+        - Linuxfirefox44
+      appium-browsers:
+        - Linuxfirefox33
+        - Linuxfirefox43
+      use-latest-webbrowser-versions: false
       launch-sauce-connect-on-slave: true
+      verbose-logging: true
+      condition: always
+      unique-tunnel-perbuild: false
+      sauce-connect-path: /bin/sc
+      sauce-connect-options: '-N'

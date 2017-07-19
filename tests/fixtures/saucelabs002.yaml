@@ -1,0 +1,3 @@
+wrappers:
+  - sauce-ondemand-ng:
+      enable-sauce-connect: true

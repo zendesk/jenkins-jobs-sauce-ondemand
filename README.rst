@@ -1,18 +1,30 @@
 Jenkins Job Builder SauceLabs Ondemand
 --------------------------------------
 
-A `Jenkins Job Builder` plugin to support configuring the `Allure` reports publisher:
+A `Jenkins Job Builder` plugin to support configuring the `SourceLabs Ondemand` build wrapper:
 
 .. code-block:: yaml
 
-    publishers:
-      - allure:
-          results:
-            - results/allure-results
-          properties:
-            allure.issues.tracker.pattern: "http://github.com/allure-framework/allure-core/issues/%s"
-          build-policy: unstable
-          include-properties: false
+    wrappers:
+      - sauce-ondemand-ng:
+          enable-sauce-connect: true
+          sauce-host: foo
+          sauce-port: 8080
+          credentials-id: ad7f5c34-6c5b-11e7-8e08-784f436e5c58
+          native-app-package: foo/path
+          webdriver-browsers:
+            - Linuxfirefox32
+            - Linuxfirefox44
+          appium-browsers:
+            - Linuxfirefox33
+            - Linuxfirefox43
+          use-latest-webbrowser-versions: false
+          launch-sauce-connect-on-slave: true
+          verbose-logging: true
+          condition: always
+          unique-tunnel-perbuild: false
+          sauce-connect-path: /bin/sc
+          sauce-connect-options: '-N'
 
 License
 -------
