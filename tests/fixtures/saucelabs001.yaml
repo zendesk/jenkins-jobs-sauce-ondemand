@@ -1,0 +1,13 @@
+wrappers:
+  - sauce-ondemand-ng:
+      enable-sauce-connect: true
+      sauce-host: foo
+      sauce-port: '8080'
+      override-username: foo
+      override-api-access-key: 123lkj123kh123l;k12323
+      type: webdriver
+      platforms:
+        - Linuxandroid4
+        - Linuxfirefox10
+        - Linuxfirefox11
+      launch-sauce-connect-on-slave: true

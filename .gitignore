@@ -1,0 +1,8 @@
+/.eggs/
+/jenkins_jobs_sauce_ondemand.egg-info/
+*.pyc
+/.testrepository/
+/build/
+.DS_Store
+/dist/
+/.tox/
