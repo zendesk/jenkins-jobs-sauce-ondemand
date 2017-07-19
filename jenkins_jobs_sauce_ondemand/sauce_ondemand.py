@@ -68,47 +68,33 @@ def sauce_ondemand(registry, xml_parent, data):
         ondemand.saucelabs.com for the Selenium Host, then use 4444.
         The value of the port will be stored in the SAUCE_ONDEMAND_PORT
         environment variable.  (default '')
-    :arg str override-username: If set then api-access-key must be set.
-        Overrides the username from the global config. (default '')
-    :arg str override-api-access-key: If set then username must be set.
-        Overrides the api-access-key set in the global config. (default '')
-    :arg str starting-url: The value set here will be stored in the
-        SELENIUM_STARTING_ULR environment variable.  Only used when type
-        is selenium. (default '')
-    :arg str type: Type of test to run (default selenium)
-
-        :type values:
-          * **selenium**
-          * **webdriver**
-    :arg list platforms: The platforms to run the tests on.  Platforms
-        supported are dynamically retrieved from sauce labs.  The format of
-        the values has only the first letter capitalized, no spaces, underscore
-        between os and version, underscore in internet_explorer, everything
-        else is run together.  If there are not multiple version of the browser
-        then just the first version number is used.
-        Examples: Mac_10.8iphone5.1 or Windows_2003firefox10
-        or Windows_2012internet_explorer10 (default '')
     :arg bool launch-sauce-connect-on-slave: Whether to launch sauce connect
         on the slave. (default false)
-    :arg str https-protocol: The https protocol to use (default '')
     :arg str sauce-connect-options: Options to pass to sauce connect
         (default '')
 
     Example::
 
-      wrappers:
-        - sauce-ondemand:
-            enable-sauce-connect: true
-            sauce-host: foo
-            sauce-port: 8080
-            override-username: foo
-            override-api-access-key: 123lkj123kh123l;k12323
-            type: webdriver
-            platforms:
-              - Linuxandroid4
-              - Linuxfirefox10
-              - Linuxfirefox11
-            launch-sauce-connect-on-slave: true
+        wrappers:
+          - sauce-ondemand-ng:
+              enable-sauce-connect: true
+              sauce-host: foo
+              sauce-port: 8080
+              credentials-id: ad7f5c34-6c5b-11e7-8e08-784f436e5c58
+              native-app-package: foo/path
+              webdriver-browsers:
+                - Linuxfirefox32
+                - Linuxfirefox44
+              appium-browsers:
+                - Linuxfirefox33
+                - Linuxfirefox43
+              use-latest-webbrowser-versions: false
+              launch-sauce-connect-on-slave: true
+              verbose-logging: true
+              condition: always
+              unique-tunnel-perbuild: false
+              sauce-connect-path: /bin/sc
+              sauce-connect-options: '-N'
     """
     sauce = XML.SubElement(xml_parent, 'hudson.plugins.sauce__ondemand.'
                            'SauceOnDemandBuildWrapper')
